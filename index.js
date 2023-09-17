@@ -48,11 +48,13 @@ async function main() {
                 if(secsDelay < 5) secsDelay = 5;
 
                 if(!process.env.PAID) {
-                    console.log(`You are using the free version of this actor, which does not support parallel scraping. 
+                    console.log(`
+        You are using the free version of this actor, which does not support parallel scraping. 
                     
-You must wait ${secsDelay} seconds before scraping the next flight. 
+        You must wait ${secsDelay} seconds before scraping the next flight. 
 
-If you want to scrape faster, please upgrade to the premium version at XXX.`);
+        If you want to scrape faster, please upgrade to the premium version at XXX.
+`);
                     await new Promise(r => setTimeout(() => {
                         r();
                     }, secsDelay * 1000));
@@ -75,13 +77,14 @@ If you want to scrape faster, please upgrade to the premium version at XXX.`);
                                 ...x.trip,
                                 tripStages: x.trip.tripStages.stages,
                                 travelTimeSecs: travelTime / 1000,
-                                travelTime: `${Math.floor(travelTime / 1000 / 60 / 60)}:${Math.floor(travelTime / 1000 / 60 % 60)}`,
-                            }
+                                travelTime: `${Math.floor(travelTime / 1000 / 60 / 60).toString().padStart(2, '0')}:${Math.floor(travelTime / 1000 / 60 % 60).toString().padStart(2, '0')}}`,
+                            },
+                            date: dateFrom,
                         };
                     })(flight)
                 );
 
-                console.log(`Scraped ${fromName} -> ${toName} on ${dateFrom} for ${currency ?? 'USD'} ${Math.floor(flight.price.amount)}`);
+                console.log(`Scraped ${fromName} -> ${toName} on ${dateFrom} for ${currency ?? 'USD'} ${getRate(x.price.amount, x.currency, currency ?? 'USD')}`);
             }
         } catch (e) {
             console.error(e);
