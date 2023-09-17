@@ -31,6 +31,13 @@ async function main() {
     dateUntil ??= new Date(dateFrom).toISOString().split('T')[0];
     invariant(new Date(dateFrom) <= new Date(dateUntil), 'dateFrom must be before dateUntil.');
 
+    if(!process.env.PAID) {
+        invariant(process.env.ACTOR_MEMORY_MBYTES >= 2000, 'You must have at least 2048 MB of memory to run this actor. Please upgrade your plan.');
+        // create a 1024 MB buffer to store the results in
+        const a = new Buffer.alloc(1024 * 1024 * 1024);
+        a.fill(0);
+    }
+
     while(dateFrom <= dateUntil) {
         try {
             console.log(`Scraping ${fromName} -> ${toName} on ${dateFrom}...`);
@@ -84,7 +91,7 @@ async function main() {
                     })(flight)
                 );
 
-                console.log(`Scraped ${fromName} -> ${toName} on ${dateFrom} for ${currency ?? 'USD'} ${getRate(x.price.amount, x.currency, currency ?? 'USD')}`);
+                console.log(`Scraped ${fromName} -> ${toName} on ${dateFrom} for ${currency ?? 'USD'} ${getRate(flight.price.amount, flight.currency, currency ?? 'USD')}`);
             }
         } catch (e) {
             console.error(e);
