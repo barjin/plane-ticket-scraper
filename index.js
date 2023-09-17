@@ -80,6 +80,8 @@ If you want to scrape faster, please upgrade to the premium version at XXX.`);
                         };
                     })(flight)
                 );
+
+                console.log(`Scraped ${fromName} -> ${toName} on ${dateFrom} for ${currency ?? 'USD'} ${Math.floor(flight.price.amount)}`);
             }
         } catch (e) {
             console.error(e);
@@ -92,7 +94,7 @@ If you want to scrape faster, please upgrade to the premium version at XXX.`);
 
     console.log(`
 
-Done scraping ${fromName} -> ${toName} from ${input.dateFrom} to ${input.dateUntil}.
+Done scraping ${fromName} -> ${toName} from ${dateFrom} to ${dateUntil}.
 `);
     await Actor.exit();
 }

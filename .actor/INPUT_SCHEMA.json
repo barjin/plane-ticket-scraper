@@ -335,7 +335,7 @@
       "description": "",
       "editor": "datepicker"
     },
-    "dateTo": {
+    "dateUntil": {
       "title": "Departure date (range to) (YYYY-MM-DD)",
       "type": "string",
       "example": "YYYY-MM-DD",

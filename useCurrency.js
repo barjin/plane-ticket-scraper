@@ -7,7 +7,7 @@ const updateCurrencyContext = async () => {
 
     currencyContext.rates = rates;
     currencyContext.getRate = (amount, fromCurrency, toCurrency) => {
-        return (amount / rates[fromCurrency]) * rates[toCurrency];
+        return Math.floor((amount / rates[fromCurrency]) * rates[toCurrency]);
     }
 }
 
