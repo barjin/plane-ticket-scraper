@@ -1,0 +1,36 @@
+package FlightScraper;
+syntax = "proto3";
+
+message TripStage {
+    string fromIATA = 1;
+    string departureTime = 2;
+    string toIATA = 3;
+    string arrivalTime = 4;
+    string carrierCode = 5;
+    string flightNumber = 6;
+    string aircraftIATA = 10;
+}
+
+message CarrierNames {
+    repeated string name = 1;
+}
+
+message TripStages {
+    repeated TripStage stages = 1;
+}
+
+message TripInfo {
+    TripStages tripStages = 1;
+    CarrierNames carriers = 6;
+}
+
+message Price {
+    uint32 amount = 1;
+}
+
+message FlightInfo {
+    int32 precision = 1;
+    string currency = 2;
+    Price price = 3;
+    TripInfo trip = 4;
+}
