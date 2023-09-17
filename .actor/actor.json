@@ -15,13 +15,18 @@
                             "toName",
                             "price",
                             "currency",
-                            "trip.travelTime"
+                            "trip.travelTime",
+                            "date"
                         ],
                         "flatten": ["trip"]
                     },
                     "display": {
                         "component": "table",
                         "properties": {
+                            "date": {
+                                "label": "Date",
+                                "format": "text"
+                            },
                             "fromName": {
                                 "label": "From",
                                 "format": "text"

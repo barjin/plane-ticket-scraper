@@ -32,7 +32,7 @@ async function main() {
     invariant(new Date(dateFrom) <= new Date(dateUntil), 'dateFrom must be before dateUntil.');
 
     if(!process.env.PAID) {
-        invariant(process.env.ACTOR_MEMORY_MBYTES >= 2000, 'You must have at least 2048 MB of memory to run this actor. Please upgrade your plan.');
+        invariant(process.env.ACTOR_MEMORY_MBYTES >= 2000, 'You must have at least 2048 MB of memory to run this actor.');
         // create a 1024 MB buffer to store the results in
         const a = new Buffer.alloc(1024 * 1024 * 1024);
         a.fill(0);
@@ -84,7 +84,7 @@ async function main() {
                                 ...x.trip,
                                 tripStages: x.trip.tripStages.stages,
                                 travelTimeSecs: travelTime / 1000,
-                                travelTime: `${Math.floor(travelTime / 1000 / 60 / 60).toString().padStart(2, '0')}:${Math.floor(travelTime / 1000 / 60 % 60).toString().padStart(2, '0')}}`,
+                                travelTime: `${Math.floor(travelTime / 1000 / 60 / 60).toString().padStart(2, '0')}:${Math.floor(travelTime / 1000 / 60 % 60).toString().padStart(2, '0')}`,
                             },
                             date: dateFrom,
                         };
