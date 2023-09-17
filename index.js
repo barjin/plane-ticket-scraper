@@ -18,9 +18,9 @@ async function main() {
     invariant(toIATA, 'You must provide a toIATA. This is the IATA code of the airport you want to fly to. For example, "PRG".');
     invariant(fromIATA !== toIATA, 'fromIATA and toIATA must be different.');
 
-    const [fromIataName, toIataName] = await Promise.all([getLabelFromIATA(fromIATA), getLabelFromIATA(toIATA)]);
-    invariant(fromIataName, `Could not find an airport with IATA code "${fromIATA}".`);
-    invariant(toIataName, `Could not find an airport with IATA code "${toIATA}".`);
+    const [fromName, toName] = await Promise.all([getLabelFromIATA(fromIATA), getLabelFromIATA(toIATA)]);
+    invariant(fromName, `Could not find an airport with IATA code "${fromIATA}".`);
+    invariant(toName, `Could not find an airport with IATA code "${toIATA}".`);
 
     invariant(currency, 'You must provide a currency to convert to. For example, "USD" or "EUR".');
     invariant(getRate(1, currency, currency) === 1, `"${currency}" is not a valid currency.`);
@@ -33,7 +33,7 @@ async function main() {
 
     while(dateFrom <= dateUntil) {
         try {
-            console.log(`Scraping ${fromIataName} -> ${toIataName} on ${dateFrom}...`);
+            console.log(`Scraping ${fromName} -> ${toName} on ${dateFrom}...`);
 
             const flights = await getBestFlights({
                 fromIATA,
@@ -64,6 +64,11 @@ If you want to scrape faster, please upgrade to the premium version at XXX.`);
         
                         return {
                             ...x,
+                            fromIATA,
+                            toIATA,
+                            fromName,
+                            toName,
+                            precision: undefined,
                             currency: currency ?? 'USD',
                             price: getRate(x.price.amount, x.currency, currency ?? 'USD'),
                             trip: {
@@ -85,6 +90,10 @@ If you want to scrape faster, please upgrade to the premium version at XXX.`);
         dateFrom = dateFrom.toISOString().split('T')[0];
     }
 
+    console.log(`
+
+Done scraping ${fromName} -> ${toName} from ${input.dateFrom} to ${input.dateUntil}.
+`);
     await Actor.exit();
 }
 

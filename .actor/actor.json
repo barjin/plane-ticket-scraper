@@ -1,0 +1,51 @@
+{
+    "actorSpecification": 1,
+    "name": "Plane Ticket Finder",
+    "title": "Plane Ticket Finder",
+    "version": "1.0.0",
+    "storages": {
+        "dataset": {
+            "actorSpecification": 1,
+            "views": {
+                "overview": {
+                    "title": "Overview",
+                    "transformation": {
+                        "fields": [
+                            "fromName",
+                            "toName",
+                            "price",
+                            "currency",
+                            "trip.travelTime"
+                        ],
+                        "flatten": ["trip"]
+                    },
+                    "display": {
+                        "component": "table",
+                        "properties": {
+                            "fromName": {
+                                "label": "From",
+                                "format": "text"
+                            },
+                            "toName": {
+                                "label": "To",
+                                "format": "text"
+                            },
+                            "price": {
+                                "label": "Price",
+                                "format": "number"
+                            },
+                            "currency": {
+                                "label": "Currency",
+                                "format": "text"
+                            },
+                            "trip.travelTime": {
+                                "label": "Duration",
+                                "format": "number"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
