@@ -4,19 +4,19 @@
   "type": "object",
   "schemaVersion": 1,
   "properties": {
-    "fromIATA": {
-      "title": "From (IATA airport code)",
-      "type": "string",
-      "description": "IATA code of the airport you want to fly from. You can find the code <a href=\"https://www.iata.org/en/publications/directories/code-search/\" target=\"_blank\">here</a>.",
-      "prefill": "PRG",
-      "editor": "textfield"
+    "fromIATAs": {
+      "title": "From (IATA airport codes)",
+      "type": "array",
+      "description": "Array of IATA codes of the airports you want to fly from. You can find the codes <a href=\"https://www.iata.org/en/publications/directories/code-search/\" target=\"_blank\">here</a>.",
+      "prefill": ["PRG"],
+      "editor": "stringList"
     },
-    "toIATA": {
-      "title": "To (IATA airport code)",
-      "type": "string",
+    "toIATAs": {
+      "title": "To (IATA airport codes)",
+      "type": "array",
       "description": "IATA code of the airport you want to fly to. You can find the code <a href=\"https://www.iata.org/en/publications/directories/code-search/\" target=\"_blank\">here</a>.",
-      "prefill": "MUC",
-      "editor": "textfield"
+      "prefill": ["MUC"],
+      "editor": "stringList"
     },
     "currency": {
       "sectionCaption": "Price and date",
