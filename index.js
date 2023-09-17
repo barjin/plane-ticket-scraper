@@ -23,9 +23,18 @@ async function main() {
     for(const fromIATA of fromIATAs) {
         for(const toIATA of toIATAs) {
             let { currency, dateFrom, dateUntil } = input;
-            const [fromName, toName] = await Promise.all([getLabelFromIATA(fromIATA), getLabelFromIATA(toIATA)]);
-            invariant(fromName, `Could not find an airport with IATA code "${fromIATA}".`);
-            invariant(toName, `Could not find an airport with IATA code "${toIATA}".`);
+
+            let fromName, toName;
+            try {
+                const names = await Promise.all([getLabelFromIATA(fromIATA), getLabelFromIATA(toIATA)]);
+                fromName = names[0];
+                toName = names[1];
+                invariant(fromName, `Could not find an airport with IATA code "${fromIATA}".`);
+                invariant(toName, `Could not find an airport with IATA code "${toIATA}".`);
+            } catch (e) {
+                console.log(e);
+                continue;
+            }
 
             invariant(currency, 'You must provide a currency to convert to. For example, "USD" or "EUR".');
             invariant(getRate(1, currency, currency) === 1, `"${currency}" is not a valid currency.`);
@@ -67,7 +76,7 @@ async function main() {
                 You must wait ${secsDelay} seconds before scraping the next flight. 
 
                 If you want to scrape faster, please upgrade to the premium version at XXX.
-        `);
+                `);
                             await new Promise(r => setTimeout(() => {
                                 r();
                             }, secsDelay * 1000));
@@ -106,14 +115,14 @@ async function main() {
                 dateFrom = new Date(dateFrom);
                 dateFrom.setDate(dateFrom.getDate() + 1);
                 dateFrom = dateFrom.toISOString().split('T')[0];
-        }
+            }
+
+        console.log(`
+        Done scraping ${fromName} -> ${toName} from ${dateFrom} to ${dateUntil}.
+
+`);
     }
 }
-
-    console.log(`
-
-Done scraping ${fromName} -> ${toName} from ${dateFrom} to ${dateUntil}.
-`);
     await Actor.exit();
 }
 
