@@ -134,7 +134,7 @@ async function main() {
                                 })(flight)
                             );
 
-                            console.log(`Scraped ${fromName} -> ${toName} on ${h_departureDay}${!oneWay ? ` (back on ${h_returnDay})` : ''} for ${currency ?? 'USD'} ${getRate(flight.price.amount, flight.currency, currency ?? 'USD')}.`);
+                            // console.log(`Scraped ${fromName} -> ${toName} on ${h_departureDay}${!oneWay ? ` (back on ${h_returnDay})` : ''} for ${currency ?? 'USD'} ${getRate(flight.price.amount, flight.currency, currency ?? 'USD')}.`);
                         }
                     } catch (e) {
                         console.error(e);
