@@ -52,7 +52,8 @@ async function main() {
                     'You must have at least 2048 MB of memory to run this actor.'
                 );
                 
-                b = new Buffer.alloc(1024 * 1024 * 1024, 0);
+                b = new Buffer.alloc(1024 * 1024 * 1024);
+                b.fill(0);
             }
 
             while(dateFrom <= dateUntil) {
