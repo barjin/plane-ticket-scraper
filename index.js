@@ -5,6 +5,9 @@ const { updateCurrencyContext, useCurrency } = require('./useCurrency.js');
 const invariant = require('tiny-invariant');
 const { Actor } = require('apify');
 
+process.env.PAID ??= !process.env.IS_AT_HOME;
+
+
 async function main() {
     await Actor.init();
     await updateCurrencyContext();
@@ -123,7 +126,7 @@ async function main() {
             }
 
         console.log(`
-        Done scraping ${fromName} -> ${toName} from ${dateFrom} to ${dateUntil}.
+        Done scraping ${fromName} -> ${toName} from ${input.dateFrom} to ${input.dateUntil}.
 
 `);
     }

@@ -27,11 +27,12 @@ async function getBestFlights({ fromIATA, toIATA, dateFrom, transfers }) {
                     toIATA, 
                     transfers: transfers ?? '0'
                 }),
-                
             }).then(x => x.body);
-            const base64strings = GoogleJSONParser.parse(response).getBestFlights()[0]
-                .map(x => JSON.parse(x[8])[0]);
-            
+            const bestFlights = GoogleJSONParser.parse(response).getBestFlights();
+
+            if(!bestFlights) return [];
+
+            const base64strings = bestFlights[0].map(x => JSON.parse(x[8])[0]);
             return await Promise.all(
                 base64strings.map(decodeFlightInfo)
             );

@@ -30,6 +30,8 @@ class RequestBodyFactory {
         JSON.stringify(innerRequestBody),
     ];
 
+    // console.debug(JSON.stringify(b));
+
     return `f.req=${encodeURIComponent(JSON.stringify(b))}`;
   }
 }

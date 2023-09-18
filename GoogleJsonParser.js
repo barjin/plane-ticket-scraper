@@ -4,8 +4,10 @@ class GoogleFlightsResponse {
     }
 
     getBestFlights() {
-        // this.data[0] -> this.data[1]?
-        return this.data[0][2][2];
+        for(let i = 2; i < 5; i++) {
+            if(this.data[0][2][i]) return this.data[0][2][i];
+        }
+        return null;
     }
 }
 
