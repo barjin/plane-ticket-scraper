@@ -342,6 +342,21 @@
       "description": "",
       "editor": "datepicker"
     },
+    "dateFromRet": {
+      "sectionCaption": "Return date",
+      "title": "Return date (range from) (YYYY-MM-DD). If unset, the search will be for one-way tickets only.",
+      "type": "string",
+      "example": "YYYY-MM-DD",
+      "description": "",
+      "editor": "datepicker"
+    },
+    "dateUntilRet": {
+      "title": "Return date (range to) (YYYY-MM-DD). If unset, the Actor will search for returns only on the date specified in the previous field.",
+      "type": "string",
+      "example": "YYYY-MM-DD",
+      "description": "",
+      "editor": "datepicker"
+    },
     "transfers": {
       "sectionCaption": "Connection details",
       "title": "No. of transfers",

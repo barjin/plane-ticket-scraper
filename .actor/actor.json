@@ -16,7 +16,8 @@
                             "price",
                             "currency",
                             "trip.travelTime",
-                            "date"
+                            "date",
+                            "returnDate"
                         ],
                         "flatten": ["trip"]
                     },
@@ -24,7 +25,11 @@
                         "component": "table",
                         "properties": {
                             "date": {
-                                "label": "Date",
+                                "label": "Departure date",
+                                "format": "text"
+                            },
+                            "returnDate": {
+                                "label": "Return date",
                                 "format": "text"
                             },
                             "fromName": {

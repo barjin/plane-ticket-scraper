@@ -1,6 +1,7 @@
 class RequestBodyFactory {
-  static createRequestBody({ fromIATA, toIATA, dateFrom, transfers }) {
-    const dateDeparture = new Date(dateFrom).toLocaleDateString('en-GB').split('/').reverse().join('-');
+  static createRequestBody({ fromIATA, toIATA, departureDay, returnDay, transfers }) {
+    const dateDeparture = new Date(departureDay).toLocaleDateString('en-GB').split('/').reverse().join('-');
+    const dateReturn = returnDay && new Date(returnDay).toLocaleDateString('en-GB').split('/').reverse().join('-');
 
     const innerRequestBody = [
         [],
@@ -21,7 +22,25 @@ class RequestBodyFactory {
                 [], dateDeparture, null, [],
                 [],
                 [], null, null, [], 3
-            ]
+            ],
+            ...(dateReturn ? 
+                [[
+                    [
+                        [
+                            [toIATA, 0]
+                        ]
+                    ],
+                    [
+                        [
+                            [fromIATA, 0]
+                        ]
+                    ], null, 
+                    Number(transfers),
+                    [],
+                    [], dateReturn, null, [],
+                    [],
+                    [], null, null, [], 3
+                ]] : [])
         ], null, null, null, 1, null, null, null, null, null, []], 1, 0, 0
     ];
 

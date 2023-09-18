@@ -7,7 +7,6 @@ const { Actor } = require('apify');
 
 process.env.PAID ??= !process.env.IS_AT_HOME;
 
-
 async function main() {
     await Actor.init();
     await updateCurrencyContext();
@@ -25,7 +24,7 @@ async function main() {
 
     for(const fromIATA of fromIATAs) {
         for(const toIATA of toIATAs) {
-            let { currency, dateFrom, dateUntil } = input;
+            let { currency, dateFrom, dateUntil, dateFromRet, dateUntilRet } = input;
 
             let fromName, toName;
             try {
@@ -47,6 +46,13 @@ async function main() {
             invariant(!dateUntil || new Date(dateUntil) > new Date(), 'dateUntil must be in the future.');
             dateUntil ??= new Date(dateFrom).toISOString().split('T')[0];
             invariant(new Date(dateFrom) <= new Date(dateUntil), 'dateFrom must be before dateUntil.');
+            if(dateFromRet || dateUntilRet) {
+                invariant(new Date(dateFromRet).getTime(), 'dateFromRet must be a valid date');
+                invariant(!dateUntilRet || new Date(dateUntilRet).getTime(), 'dateUntilRet must be a valid date');
+                dateUntilRet ??= new Date(dateFromRet).toISOString().split('T')[0];
+                invariant(new Date(dateFromRet) <= new Date(dateUntilRet), 'dateFromRet must be before dateUntilRet.');
+                invariant(new Date(dateFromRet) >= new Date(dateFrom), 'The return date (dateFromRet) must be after the departure date (dateFrom).');
+            }
 
             let b = null;
             if(!process.env.PAID) {
@@ -59,74 +65,85 @@ async function main() {
                 b.fill(0);
             }
 
-            while(dateFrom <= dateUntil) {
-                try {
-                    console.log(`Scraping ${fromName} -> ${toName} on ${dateFrom}...`);
+            let oneWay = true;
+            if(dateFromRet) oneWay = false;
 
-                    const flights = await getBestFlights({
-                        fromIATA,
-                        toIATA,
-                        dateFrom,
-                        transfers
-                    });
-
-                    
-                    for (let i = 0; i < flights.length; i++) {
-                        const flight = flights[i];
-                        
-                        if(!process.env.PAID) {
-                            let secsDelay = Math.floor(Math.random() * 20);
-                            if(secsDelay < 5) secsDelay = 5;
-
-                            console.log(`
-                You are using the free version of this actor, which does not support parallel scraping. 
-                            
-                You must wait ${secsDelay} seconds before scraping the next flight. 
-
-                If you want to scrape faster, please upgrade to the premium version at XXX.
-                `);
-                            await new Promise(r => setTimeout(() => {
-                                r();
-                            }, secsDelay * 1000));
-                        }
-
-                        await Actor.pushData(
-                            ((x) => {
-                                const travelTime = (new Date(x.trip.tripStages.stages[x.trip.tripStages.stages.length - 1].arrivalTime) - new Date(x.trip.tripStages.stages[0].departureTime));
-                
-                                return {
-                                    ...x,
-                                    fromIATA,
-                                    toIATA,
-                                    fromName,
-                                    toName,
-                                    precision: undefined,
-                                    currency: currency ?? 'USD',
-                                    price: getRate(x.price.amount, x.currency, currency ?? 'USD'),
-                                    trip: {
-                                        ...x.trip,
-                                        tripStages: x.trip.tripStages.stages,
-                                        travelTimeSecs: travelTime / 1000,
-                                        travelTime: `${Math.floor(travelTime / 1000 / 60 / 60).toString().padStart(2, '0')}:${Math.floor(travelTime / 1000 / 60 % 60).toString().padStart(2, '0')}`,
-                                    },
-                                    date: dateFrom,
-                                };
-                            })(flight)
-                        );
-
-                        console.log(`Scraped ${fromName} -> ${toName} on ${dateFrom} for ${currency ?? 'USD'} ${getRate(flight.price.amount, flight.currency, currency ?? 'USD')}`);
-                    }
-                } catch (e) {
-                    console.error(e);
+            for (let departureDay = new Date(dateFrom); departureDay <= new Date(dateUntil); departureDay.setDate(departureDay.getDate() + 1)) {
+                if(oneWay) {
+                    dateFromRet = departureDay;
+                    dateUntilRet = departureDay;
                 }
 
-                dateFrom = new Date(dateFrom);
-                dateFrom.setDate(dateFrom.getDate() + 1);
-                dateFrom = dateFrom.toISOString().split('T')[0];
+                const h_departureDay = departureDay.toISOString().split('T')[0];
+                
+                for (let returnDay = new Date(dateFromRet); returnDay <= new Date(dateUntilRet); returnDay.setDate(returnDay.getDate() + 1)) {
+                    const h_returnDay = returnDay.toISOString().split('T')[0];
+                    try {
+                        console.log(`Scraping ${fromName} -> ${toName} on ${h_departureDay}${!oneWay ? `, returning ${h_returnDay}` : ''}...`);
+
+                        const flights = await getBestFlights({
+                            fromIATA,
+                            toIATA,
+                            departureDay: h_departureDay,
+                            oneWay,
+                            returnDay: h_returnDay,
+                            transfers
+                        });
+                        
+                        for (let i = 0; i < flights.length; i++) {
+                            const flight = flights[i];
+                            
+                            if(!process.env.PAID) {
+                                let secsDelay = Math.floor(Math.random() * 20);
+                                if(secsDelay < 5) secsDelay = 5;
+
+                                console.log(`
+                    You are using the free version of this actor, which does not support parallel scraping. 
+                                
+                    You must wait ${secsDelay} seconds before scraping the next flight. 
+
+                    If you want to scrape faster, please upgrade to the premium version at XXX.
+                    `);
+                                await new Promise(r => setTimeout(() => {
+                                    r();
+                                }, secsDelay * 1000));
+                            }
+
+                            await Actor.pushData(
+                                ((x) => {
+                                    const travelTime = (new Date(x.trip.tripStages.stages[x.trip.tripStages.stages.length - 1].arrivalTime) - new Date(x.trip.tripStages.stages[0].departureTime));
+                    
+                                    return {
+                                        ...x,
+                                        fromIATA,
+                                        toIATA,
+                                        fromName,
+                                        toName,
+                                        precision: undefined,
+                                        currency: currency ?? 'USD',
+                                        price: getRate(x.price.amount, x.currency, currency ?? 'USD'),
+                                        trip: {
+                                            ...x.trip,
+                                            tripStages: x.trip.tripStages.stages,
+                                            travelTimeSecs: travelTime / 1000,
+                                            travelTime: `${Math.floor(travelTime / 1000 / 60 / 60).toString().padStart(2, '0')}:${Math.floor(travelTime / 1000 / 60 % 60).toString().padStart(2, '0')}`,
+                                        },
+                                        date: h_departureDay,
+                                        returnDate: !oneWay && h_returnDay,
+                                    };
+                                })(flight)
+                            );
+
+                            console.log(`Scraped ${fromName} -> ${toName} on ${h_departureDay}${!oneWay ? ` (back on ${h_returnDay})` : ''} for ${currency ?? 'USD'} ${getRate(flight.price.amount, flight.currency, currency ?? 'USD')}.`);
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
             }
 
         console.log(`
-        Done scraping ${fromName} -> ${toName} from ${input.dateFrom} to ${input.dateUntil}.
+        Done scraping ${fromName} -> ${toName}.
 
 `);
     }

@@ -5,7 +5,7 @@ const { gotScraping } = require('got-scraping');
 
 const proxyPassword = process.env.APIFY_PROXY_PASSWORD;
 
-async function getBestFlights({ fromIATA, toIATA, dateFrom, transfers }) {
+async function getBestFlights({ fromIATA, toIATA, departureDay, oneWay, returnDay, transfers }) {
     for(let repeat = 0; repeat < 3; repeat++) {
         try {
             const response = await gotScraping.post(
@@ -22,7 +22,8 @@ async function getBestFlights({ fromIATA, toIATA, dateFrom, transfers }) {
                 },
                 proxyUrl: `http://session-${(+new Date()).toString().slice(0,8)}:${proxyPassword}@proxy.apify.com:8000`,
                 body: RequestBodyFactory.createRequestBody({
-                    dateFrom,
+                    departureDay,
+                    returnDay: oneWay ? undefined : returnDay,
                     fromIATA,
                     toIATA, 
                     transfers: transfers ?? '0'
@@ -41,7 +42,7 @@ async function getBestFlights({ fromIATA, toIATA, dateFrom, transfers }) {
         }
     }
 
-    throw new Error(`Scraping ${fromIATA} -> ${toIATA} on ${dateFrom} failed.`);
+    throw new Error(`Scraping ${fromIATA} -> ${toIATA} on ${departureDay} failed.`);
 };
 
 module.exports = { getBestFlights };
