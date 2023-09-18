@@ -2,7 +2,6 @@ const { decodeFlightInfo } = require('./test.proto.js');
 const { GoogleJSONParser } = require('./GoogleJsonParser.js');
 const { RequestBodyFactory } = require('./RequestFactory.js');
 const { gotScraping } = require('got-scraping');
-const { useWikidata } = require('./useWikidata.js');
 
 const proxyPassword = process.env.APIFY_PROXY_PASSWORD;
 

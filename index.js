@@ -13,7 +13,7 @@ async function main() {
     const { getRate } = useCurrency();
     const { getLabelFromIATA } = useWikidata();
     
-    let { fromIATAs, toIATAs } = input;
+    let { fromIATAs, toIATAs, transfers } = input;
 
     invariant(fromIATAs, 'You must provide the fromIATAs list. This is an array of IATA codes of the airports you want to fly from. For example, ["PRG"].');
     invariant(toIATAs, 'You must provide the toIATAs list. This is an array of IATA codes of the airports you want to fly to. For example, ["LHR"].');
@@ -64,6 +64,7 @@ async function main() {
                         fromIATA,
                         toIATA,
                         dateFrom,
+                        transfers
                     });
 
                     
