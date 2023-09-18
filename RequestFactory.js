@@ -1,5 +1,5 @@
 class RequestBodyFactory {
-  static createRequestBody({ fromIATA, toIATA, dateFrom }) {
+  static createRequestBody({ fromIATA, toIATA, dateFrom, transfers }) {
     const dateDeparture = new Date(dateFrom).toLocaleDateString('en-GB').split('/').reverse().join('-');
 
     const innerRequestBody = [
@@ -15,7 +15,9 @@ class RequestBodyFactory {
                     [
                         [toIATA, 0]
                     ]
-                ], null, 0, [],
+                ], null, 
+                Number(transfers), // 0 - any number of stops, 1 - direct flights, 2 - 1 stop, 3 - 2 stops
+                [],
                 [], dateDeparture, null, [],
                 [],
                 [], null, null, [], 3

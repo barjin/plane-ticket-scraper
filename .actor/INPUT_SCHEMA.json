@@ -19,7 +19,6 @@
       "editor": "stringList"
     },
     "currency": {
-      "sectionCaption": "Price and date",
       "title": "Currency",
       "type": "string",
       "description": "Currency for displayed prices.",
@@ -329,6 +328,7 @@
       "prefill": "USD"
     },
     "dateFrom": {
+      "sectionCaption": "Departure date",
       "title": "Departure date (range from) (YYYY-MM-DD)",
       "type": "string",
       "example": "YYYY-MM-DD",
@@ -341,7 +341,27 @@
       "example": "YYYY-MM-DD",
       "description": "",
       "editor": "datepicker"
+    },
+    "transfers": {
+      "sectionCaption": "Connection details",
+      "title": "No. of transfers",
+      "type": "string",
+      "description": "Number of transfers.",
+      "editor": "select",
+      "enum": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "enumTitles": [
+        "Any number of transfers", 
+        "Direct flights only", 
+        "At most 1 transfer",
+        "At most 2 transfers"
+      ],
+      "default": "0"
     }
   },
-  "required": ["currency"]
+  "required": ["fromIATAs", "toIATAs", "dateFrom", "dateUntil", "currency"]
 }

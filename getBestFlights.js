@@ -6,7 +6,7 @@ const { useWikidata } = require('./useWikidata.js');
 
 const proxyPassword = process.env.APIFY_PROXY_PASSWORD;
 
-async function getBestFlights({ fromIATA, toIATA, dateFrom }) {
+async function getBestFlights({ fromIATA, toIATA, dateFrom, transfers }) {
     for(let repeat = 0; repeat < 3; repeat++) {
         try {
             const response = await gotScraping.post(
@@ -25,7 +25,8 @@ async function getBestFlights({ fromIATA, toIATA, dateFrom }) {
                 body: RequestBodyFactory.createRequestBody({
                     dateFrom,
                     fromIATA,
-                    toIATA
+                    toIATA, 
+                    transfers: transfers ?? '0'
                 }),
                 
             }).then(x => x.body);
