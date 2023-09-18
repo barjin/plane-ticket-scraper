@@ -45,11 +45,14 @@ async function main() {
             dateUntil ??= new Date(dateFrom).toISOString().split('T')[0];
             invariant(new Date(dateFrom) <= new Date(dateUntil), 'dateFrom must be before dateUntil.');
 
+            let b = null;
             if(!process.env.PAID) {
-                invariant(process.env.ACTOR_MEMORY_MBYTES >= 2000, 'You must have at least 2048 MB of memory to run this actor.');
+                invariant(
+                    process.env.ACTOR_MEMORY_MBYTES >= 2048, 
+                    'You must have at least 2048 MB of memory to run this actor.'
+                );
                 
-                const a = new Buffer.alloc(1024 * 1024 * 1024);
-                a.fill(0);
+                b = new Buffer.alloc(1024 * 1024 * 1024, 0);
             }
 
             while(dateFrom <= dateUntil) {
