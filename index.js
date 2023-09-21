@@ -5,7 +5,7 @@ const { updateCurrencyContext, useCurrency } = require('./useCurrency.js');
 const invariant = require('tiny-invariant');
 const { Actor } = require('apify');
 
-process.env.PAID ??= !process.env.IS_AT_HOME;
+process.env.PAID ??= !process.env.APIFY_IS_AT_HOME;
 
 async function main() {
     await Actor.init();
