@@ -25,6 +25,16 @@ Sometimes, airlines make mistakes and sell tickets for a fraction of their usual
 
 To do so, set the `transfers` input to `0` (Any number of transfers) and set the `dateFrom` and `dateUntil` inputs to a date range in the future. The further in the future you go, the more likely you are to find a mistake fare - or a good deal in general.
 
+## Output
+
+The Actor outputs a JSON array with date of the flight, its length, number of transfers, price, IATA of the aircraft and more.
+
+![Table with results](https://i.imgur.com/tnjxtHu.png)
+
+You can export this data as CSV, Excel file or JSON, so you can integrate them seamlessly into your workflow.
+
+![JSON array with results](https://i.imgur.com/STsi9Wu.png)
+
 ## Finding the actual tickets
 While this Actor returns a lot of data, it doesn't retrieve the actual links to the airline tickets. Since the ticket prices are aggregated from multiple sources, we cannot guarantee you will find a ticket for the exact same price this actor returns. 
 
