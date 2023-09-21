@@ -93,7 +93,7 @@ async function main() {
                         for (let i = 0; i < flights.length; i++) {
                             const flight = flights[i];
                             
-                            if(!process.env.PAID) {
+                            if(process.env.PAID !== '1') {
                                 let secsDelay = Math.floor(Math.random() * 20);
                                 if(secsDelay < 5) secsDelay = 5;
 
