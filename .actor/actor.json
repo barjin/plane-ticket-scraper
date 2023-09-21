@@ -1,7 +1,7 @@
 {
     "actorSpecification": 1,
-    "name": "Flight Tickets Scraper",
-    "title": "Flight Tickets Scraper",
+    "name": "Flight Ticket Scraper",
+    "title": "Flight Ticket Scraper",
     "version": "1.0.0",
     "storages": {
         "dataset": {

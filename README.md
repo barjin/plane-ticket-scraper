@@ -1,4 +1,4 @@
-# Flight Tickets Scraper 
+# Flight Ticket Scraper 
 
 This is a lightweight Apify Actor for extracting flight tickets data. It scrapes data from multiple flight ticket providers and returns them in a structured JSON format.
 

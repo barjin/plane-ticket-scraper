@@ -1,5 +1,5 @@
 {
-  "title": "Flight Tickets Scraper",
+  "title": "Flight Ticket Scraper",
   "description": "Find the cheapest plane tickets from your city to anywhere in the world.",
   "type": "object",
   "schemaVersion": 1,
