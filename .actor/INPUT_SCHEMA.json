@@ -333,7 +333,8 @@
       "type": "string",
       "example": "YYYY-MM-DD",
       "description": "",
-      "editor": "datepicker"
+      "editor": "datepicker",
+      "default": "2023-12-01"
     },
     "dateUntil": {
       "title": "Departure date (range to) (YYYY-MM-DD)",
@@ -378,5 +379,5 @@
       "default": "0"
     }
   },
-  "required": ["fromIATAs", "toIATAs", "dateFrom", "dateUntil", "currency"]
+  "required": ["fromIATAs", "toIATAs", "dateFrom", "currency"]
 }
