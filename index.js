@@ -102,7 +102,7 @@ async function main() {
                                 
                     You must wait ${secsDelay} seconds before scraping the next flight. 
 
-                    If you want to scrape faster, please upgrade to the premium version at XXX.
+                    If you want to scrape faster, please upgrade to the premium version at https://apify.com/jindrich.bar/flight-ticket-scraper.
                     `);
                                 await new Promise(r => setTimeout(() => {
                                     r();
