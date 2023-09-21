@@ -1,6 +1,4 @@
-<div align="center">
-    <img src="https://i.imgur.com/J3PtagJ.png" />
-</div>
+![Flight Ticket Scraper](https://i.imgur.com/J3PtagJ.png)
 
 Search for great deals on flight tickets using this Actor. You can specify the airports you want to fly from and to, the dates you want to fly on and the number of transfers you want to have on your flight. The actor will then return a list of flights that match your criteria, along with their prices in a neatly formatted JSON.
 ## Usage
