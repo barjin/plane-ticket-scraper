@@ -1,5 +1,13 @@
 ![Flight Ticket Scraper](https://i.imgur.com/J3PtagJ.png)
 
+>
+> This is the free version of this actor. 
+>
+> It doesn't support parallel scraping, so it's (much) slower. If you want to scrape flight tickets faster (cca 120 flights per minute), please consider supporting us by using the [premium version](https://apify.com/jindrich.bar/flight-ticket-scraper) of this actor. 
+>
+> It's only 2 USD per 1000 scraped flights. This one will remain free forever, though. :)
+>
+
 Search for great deals on flight tickets using this Actor. You can specify the airports you want to fly from and to, the dates you want to fly on and the number of transfers you want to have on your flight. The actor will then return a list of flights that match your criteria, along with their prices in a neatly formatted JSON.
 ## Usage
 
