@@ -1,7 +1,8 @@
-# Flight Ticket Scraper 
+<div align="center">
+    <img src="https://i.imgur.com/J3PtagJ.png" />
+</div>
 
-This is a lightweight Apify Actor for extracting flight tickets data. It scrapes data from multiple flight ticket providers and returns them in a structured JSON format.
-
+Search for great deals on flight tickets using this Actor. You can specify the airports you want to fly from and to, the dates you want to fly on and the number of transfers you want to have on your flight. The actor will then return a list of flights that match your criteria, along with their prices in a neatly formatted JSON.
 ## Usage
 
 In the input tab, you can specify the following:
@@ -21,7 +22,13 @@ In the input tab, you can specify the following:
 - **transfers** - set how many transfers you want to have on your flight. 
     - **Watch out!** This one is slightly unintuitive. `0` means **no constraints** on the number of transfers, `1` means flights without transfers, `2` means flights with 1 transfer and `3` means flights with 2 transfers.
 
+## Search for mistake fares
+Sometimes, airlines make mistakes and sell tickets for a fraction of their usual price. These are called mistake fares (or error fares) and using this Actor, you can search for them. 
+
+To do so, set the `transfers` input to `0` (Any number of transfers) and set the `dateFrom` and `dateUntil` inputs to a date range in the future. The further in the future you go, the more likely you are to find a mistake fare - or a good deal in general.
+
 ## Finding the actual tickets
 While this Actor returns a lot of data, it doesn't retrieve the actual links to the airline tickets. Since the ticket prices are aggregated from multiple sources, we cannot guarantee you will find a ticket for the exact same price this actor returns. 
 
 However, searching for the tickets on [Google Flights](https://flights.google.com) usually yields very similar results - at least at the time of scraping the data.
+
