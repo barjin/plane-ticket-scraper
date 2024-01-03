@@ -5,7 +5,7 @@ const { gotScraping } = require('got-scraping');
 
 const proxyPassword = process.env.APIFY_PROXY_PASSWORD;
 
-async function getBestFlights({ fromIATA, toIATA, departureDay, oneWay, returnDay, transfers }) {
+async function getBestFlights({ fromIATA, toIATA, departureDay, oneWay, returnDay, maxTransfers }) {
     for(let repeat = 0; repeat < 3; repeat++) {
         try {
             const response = await gotScraping.post(
@@ -20,13 +20,14 @@ async function getBestFlights({ fromIATA, toIATA, departureDay, oneWay, returnDa
                     "Sec-Fetch-Mode": "cors",
                     "Sec-Fetch-Site": "same-origin"
                 },
-                proxyUrl: `http://session-${(+new Date()).toString().slice(0,8)}:${proxyPassword}@proxy.apify.com:8000`,
                 body: RequestBodyFactory.createRequestBody({
                     departureDay,
                     returnDay: oneWay ? undefined : returnDay,
                     fromIATA,
                     toIATA, 
-                    transfers: transfers ?? '0'
+                    transfers: maxTransfers == 0 ? '1' :
+                        maxTransfers == 1 ? '2' :
+                        maxTransfers == 2 ? '3' : '0',
                 }),
             }).then(x => x.body);
             const bestFlights = GoogleJSONParser.parse(response).getBestFlights();

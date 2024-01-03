@@ -3,19 +3,29 @@ const { useWikidata } = require('./useWikidata.js');
 const { updateCurrencyContext, useCurrency } = require('./useCurrency.js');
 
 const invariant = require('tiny-invariant');
-const { Actor } = require('apify');
 
 process.env.PAID ??= !process.env.APIFY_IS_AT_HOME;
 
+const input = {
+    fromIATAs: ['PRG'],
+    toIATAs: ['LHR'],
+    currency: 'CZK',
+    dateFrom: '2024-02-18', // trip from->to - Start date
+    // dateUntil: '2024-02-18', // trip from->to - End date (optional)
+    // dateFromRet: '2024-02-18', // trip to->from - Start date (optional)
+    // dateUntilRet: '2024-02-18', // trip to->from - End date (optional)
+    maxTransfers: 0,
+};
+
 async function main() {
-    await Actor.init();
     await updateCurrencyContext();
-    const input = await Actor.getInput() ?? {};
+
+    const results = [];
     
     const { getRate } = useCurrency();
     const { getLabelFromIATA } = useWikidata();
     
-    let { fromIATAs, toIATAs, transfers } = input;
+    let { fromIATAs, toIATAs, maxTransfers } = input;
 
     invariant(fromIATAs, 'You must provide the fromIATAs list. This is an array of IATA codes of the airports you want to fly from. For example, ["PRG"].');
     invariant(toIATAs, 'You must provide the toIATAs list. This is an array of IATA codes of the airports you want to fly to. For example, ["LHR"].');
@@ -54,17 +64,6 @@ async function main() {
                 invariant(new Date(dateFromRet) >= new Date(dateFrom), 'The return date (dateFromRet) must be after the departure date (dateFrom).');
             }
 
-            let b = null;
-            if(!process.env.PAID) {
-                invariant(
-                    process.env.ACTOR_MEMORY_MBYTES >= 2048, 
-                    'You must have at least 2048 MB of memory to run this actor.'
-                );
-                
-                b = new Buffer.alloc(1024 * 1024 * 1024);
-                b.fill(0);
-            }
-
             let oneWay = true;
             if(dateFromRet) oneWay = false;
 
@@ -87,30 +86,13 @@ async function main() {
                             departureDay: h_departureDay,
                             oneWay,
                             returnDay: h_returnDay,
-                            transfers
+                            maxTransfers
                         });
                         
                         for (let i = 0; i < flights.length; i++) {
                             const flight = flights[i];
-                            
-                            if(process.env.PAID !== '1') {
-                                let secsDelay = Math.floor(Math.random() * 20);
-                                if(secsDelay < 5) secsDelay = 5;
 
-                                console.log(`
-                    You are using the free version of this actor, which does not support parallel scraping. 
-                                
-                    You must wait ${secsDelay} seconds before scraping the next flight. 
-
-                    If you want to scrape faster, please upgrade to the premium version at https://apify.com/jindrich.bar/flight-ticket-scraper.
-                    `);
-                                await new Promise(r => setTimeout(() => {
-                                    r();
-                                }, secsDelay * 1000));
-                            }
-
-                            await Actor.pushData(
-                                ((x) => {
+                            results.push(((x) => {
                                     const travelTime = (new Date(x.trip.tripStages.stages[x.trip.tripStages.stages.length - 1].arrivalTime) - new Date(x.trip.tripStages.stages[0].departureTime));
                     
                                     return {
@@ -131,8 +113,7 @@ async function main() {
                                         date: h_departureDay,
                                         returnDate: !oneWay && h_returnDay,
                                     };
-                                })(flight)
-                            );
+                            })(flight));
                             
                             if(process.env.PAID !== '1') {
                                 console.log(`Scraped ${fromName} -> ${toName} on ${h_departureDay}${!oneWay ? ` (back on ${h_returnDay})` : ''} for ${currency ?? 'USD'} ${getRate(flight.price.amount, flight.currency, currency ?? 'USD')}.`);
@@ -149,8 +130,8 @@ async function main() {
 
 `);
     }
-}
-    await Actor.exit();
-}
+
+    console.log(JSON.stringify(results, null, 4));
+}}
 
 main();
