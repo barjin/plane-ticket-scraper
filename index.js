@@ -1,6 +1,7 @@
 const { getBestFlights } = require('./getBestFlights.js');
 const { useWikidata } = require('./useWikidata.js');
 const { updateCurrencyContext, useCurrency } = require('./useCurrency.js');
+const { writeFileSync } = require('fs');
 
 const invariant = require('tiny-invariant');
 
@@ -8,13 +9,17 @@ process.env.PAID ??= !process.env.APIFY_IS_AT_HOME;
 
 const input = {
     fromIATAs: ['PRG'],
-    toIATAs: ['LHR'],
+    toIATAs: ['GLA', 'EDI'],
     currency: 'CZK',
-    dateFrom: '2024-02-18', // trip from->to - Start date
-    // dateUntil: '2024-02-18', // trip from->to - End date (optional)
+    lengthMin: 14, // minimum length of the trip in days
+    lengthMax: 20, // maximum length of the trip in days
+    dateFrom: '2024-07-27', // trip from->to - Start date
+    dateUntil: '2024-08-18', // trip from->to - End date (optional)
+    dateFromRet: '2024-07-27', // trip from->to - Start date
+    dateUntilRet: '2024-08-18', // trip from->to - End date (optional)
     // dateFromRet: '2024-02-18', // trip to->from - Start date (optional)
     // dateUntilRet: '2024-02-18', // trip to->from - End date (optional)
-    maxTransfers: 0,
+    maxTransfers: 1,
 };
 
 async function main() {
@@ -34,7 +39,7 @@ async function main() {
 
     for(const fromIATA of fromIATAs) {
         for(const toIATA of toIATAs) {
-            let { currency, dateFrom, dateUntil, dateFromRet, dateUntilRet } = input;
+            let { currency, dateFrom, dateUntil, dateFromRet, dateUntilRet, lengthMin, lengthMax } = input;
 
             let fromName, toName;
             try {
@@ -49,7 +54,7 @@ async function main() {
             }
 
             invariant(currency, 'You must provide a currency to convert to. For example, "USD" or "EUR".');
-            invariant(getRate(1, currency, currency) === 1, `"${currency}" is not a valid currency.`);
+            // invariant(getRate(1, currency, currency) === 1, `"${currency}" is not a valid currency.`);
 
             invariant(dateFrom, 'You must provide a dateFrom. For example, "2023-10-18".');
             invariant(new Date(dateFrom) > new Date(), 'dateFrom must be in the future.');
@@ -76,6 +81,10 @@ async function main() {
                 const h_departureDay = departureDay.toISOString().split('T')[0];
                 
                 for (let returnDay = new Date(dateFromRet); returnDay <= new Date(dateUntilRet); returnDay.setDate(returnDay.getDate() + 1)) {
+                    if (lengthMin && returnDay - departureDay < lengthMin * 24 * 60 * 60 * 1000) continue;
+                    if (lengthMax && returnDay - departureDay > lengthMax * 24 * 60 * 60 * 1000) break;
+                    if (departureDay - returnDay > 0) break;
+
                     const h_returnDay = returnDay.toISOString().split('T')[0];
                     try {
                         console.log(`Scraping ${fromName} -> ${toName} on ${h_departureDay}${!oneWay ? `, returning ${h_returnDay}` : ''}...`);
@@ -131,7 +140,7 @@ async function main() {
 `);
     }
 
-    console.log(JSON.stringify(results, null, 4));
+    writeFileSync('results.json', JSON.stringify(results, null, 4));
 }}
 
 main();
